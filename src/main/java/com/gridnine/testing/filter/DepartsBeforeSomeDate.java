@@ -5,23 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gridnine.testing.models.Flight;
-import com.gridnine.testing.models.Segment;
 
 public class DepartsBeforeSomeDate {
 
     public List<Flight> findFlights(List<Flight> flights, LocalDateTime dateTime) {
-        List<Flight> previousFlights = new ArrayList<>();
+        List<Flight> filteredFlights = new ArrayList<>();
 
         for (Flight flight : flights) {
-            List<Segment> segments = flight.getSegments();
-
-            for (Segment segment : segments) {
-                if (segment.getDepartureDate().isBefore(dateTime)) {
-                    previousFlights.add(flight);
-                    break;
-                }
+            if (containsSegmentWhereDepartureBeforeDate(flight, dateTime)) {
+                filteredFlights.add(flight);
             }
         }
-        return previousFlights;
+        return filteredFlights;
+    }
+
+    private boolean containsSegmentWhereDepartureBeforeDate(Flight flight, LocalDateTime dateTime){
+        return flight.getSegments().stream().anyMatch(segment -> segment.getDepartureDate().isBefore(dateTime));
     }
 }
+
