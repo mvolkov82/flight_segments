@@ -1,24 +1,20 @@
 package com.gridnine.testing.filter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.gridnine.testing.models.Flight;
-import com.gridnine.testing.models.Segment;
 
 public class ArrivalBeforeDeparture {
 
     public List<Flight> findFlights(List<Flight> flights) {
-        List<Flight> arrivalsBeforeDepartures = new ArrayList<>();
+        return flights.stream()
+                .filter(this::containsSegmentWhereArrivalsBeforeDepartures)
+                .collect(Collectors.toList());
+    }
 
-        for (Flight flight : flights) {
-            for (Segment segment : flight.getSegments()) {
-                if (segment.getArrivalDate().isBefore(segment.getDepartureDate())) {
-                    arrivalsBeforeDepartures.add(flight);
-                    break;
-                }
-            }
-        }
-        return arrivalsBeforeDepartures;
+    private boolean containsSegmentWhereArrivalsBeforeDepartures(Flight flight) {
+        return flight.getSegments().stream()
+                .anyMatch(segment -> segment.getArrivalDate().isBefore(segment.getDepartureDate()));
     }
 }
